@@ -1,7 +1,7 @@
 # Wolf3d
 Simple multi-threaded raycasting engine
  
-Controls:
+### Controls:
  - Moves : WASD
  - Strafe : QE
  - Run : SHIFT
@@ -11,13 +11,13 @@ Controls:
  - Change weapon : 1 2 3 4
  - Pause : ESCAPE
 
-Menu :
+### Menu :
 
  - With simple options, we have resume game when the game is paused.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Menu.png)
 
-UI + Decor + Minimap:
+### UI + Decor + Minimap:
 
  - For the UI, we have frame per second top left, minimap top right, life bottom left and ammunitions bottom right.
  - The Decor is simply fill with barrels, columns and lights.
@@ -26,14 +26,14 @@ UI + Decor + Minimap:
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Screenshot1.png)
 
-Enemies :
+### Enemies :
 
  - NPC have multidirectionnal sprites for 8 directions views.
  - They have a simple A.I, if they looking a you they'll follow you until they are close enough to shot you.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Screenshot2.png)
 
-Objects :
+### Objects :
 
  - Objects can be weapons or life.
 
@@ -41,11 +41,13 @@ Objects :
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Screenshot4.png)
 
-Death :
+### Death :
 
  - Can only paused the game on this screen.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Death.png)
+
+### Info :
 
 Coded in C, with SDL 1.2, SDL_TTF, SDL_Image and pthread.
 
