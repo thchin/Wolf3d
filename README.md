@@ -47,4 +47,5 @@ Can only paused the game on this screen.
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Death.png)
 
 Coded in C, with SDL 1.2, SDL_TTF, SDL_Image and pthread.
-Check resources for the sprite sheet, all wolfenstein related sprite was took on [Sprite Resources](https://www.spriters-resource.com/)
+
+Check resources directory for the sprite sheet, all wolfenstein related sprite was took on [Sprite Resources](https://www.spriters-resource.com/)
