@@ -1,14 +1,5 @@
 # Wolf3d
 almost wolfenstein 3d
-
-Controls : 
-  WASD : move
-  QE : strafe
-  SPACE (hold) : shot
-  R : recharge
-  SHIFT : run
-  F : revive enemies
-  ESC : Quit
  
  Menu :
  
