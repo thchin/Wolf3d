@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@12.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/02 03:03:51 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/02 09:12:55 by thchin           ###   ########.fr       */
+/*   Updated: 2017/08/29 02:23:58 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,16 +30,17 @@ void	*my_thread(void *arg)
 	x = WIDTH * env_th->i / NTHREAD;
 	while (x < WIDTH * (env_th->i + 1) / NTHREAD)
 	{
-		init_dda(env, x);
-		calcul_step(env);
-		dda(env);
-		calcul_walldist(env);
-		calcul_height(env);
-		calcul_textx(env);
+		init_player_dda(env, &env->dda, x);
+		calcul_step(&env->dda);
+		dda(env, &env->dda);
+		calcul_walldist(&env->dda);
+		calcul_height(env, env->dda);
+		calcul_textx(env, env->dda);
 		draw_textline(env, x);
 		floor_casting(env, env->floor, x);
 		sprite_casting(env, x);
 		npc_casting(env, x);
+		obj_casting(env, x);
 		x += 1;
 	}
 	free(env);
@@ -85,12 +86,15 @@ int		print_img(t_env *env)
 		move_npc(env);
 		update_sprite(env);
 		update_npc(env);
+		update_obj(env);
+		hit_obj(env);
+		anime_npc(env);
 		create_thread(env);
 		get_midwalldist(env);
 		print_weapon(env, &env->weapon);
-		anime_npc(env);
 		print_hud(env);
 		update_time(env);
+		draw_minimap(env);
 	}
 	SDL_Flip(env->screen);
 	return (0);

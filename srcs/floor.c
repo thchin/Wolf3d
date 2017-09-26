@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/13 04:31:38 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/13 04:29:02 by thchin           ###   ########.fr       */
+/*   Updated: 2017/06/15 05:18:38 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,8 @@ void	draw_floor(t_env *env, t_floor f, int x)
 		f.text = f.text == -1 ? 3 : f.text;
 		f.textx = (int)(f.currentx * 64) % 64;
 		f.texty = (int)(f.currenty * 64) % 64;
-		env->spritebuffer[y] = env->walldist;
-		env->spritebuffer[HEIGHT - y] = env->walldist;
+		env->spritebuffer[y] = env->dda.walldist;
+		env->spritebuffer[HEIGHT - y] = env->dda.walldist;
 		get_floor_color(env, f, x, y);
 		get_ceiling_color(env, f, x, y);
 		y += 1;
@@ -96,26 +96,26 @@ void	draw_floor(t_env *env, t_floor f, int x)
 
 void	floor_casting(t_env *env, t_floor f, int x)
 {
-	if (env->side == 0 && env->raydirx > 0)
+	if (env->dda.side == 0 && env->dda.raydirx > 0)
 	{
-		f.wallx = env->mapx;
-		f.wally = env->mapy + env->wallx;
+		f.wallx = env->dda.mapx;
+		f.wally = env->dda.mapy + env->wallx;
 	}
-	else if (env->side == 0 && env->raydirx < 0)
+	else if (env->dda.side == 0 && env->dda.raydirx < 0)
 	{
-		f.wallx = env->mapx + 1.0;
-		f.wally = env->mapy + env->wallx;
+		f.wallx = env->dda.mapx + 1.0;
+		f.wally = env->dda.mapy + env->wallx;
 	}
-	else if (env->side == 1 && env->raydiry > 0)
+	else if (env->dda.side == 1 && env->dda.raydiry > 0)
 	{
-		f.wallx = env->mapx + env->wallx;
-		f.wally = env->mapy;
+		f.wallx = env->dda.mapx + env->wallx;
+		f.wally = env->dda.mapy;
 	}
 	else
 	{
-		f.wallx = env->mapx + env->wallx;
-		f.wally = env->mapy + 1.0;
+		f.wallx = env->dda.mapx + env->wallx;
+		f.wally = env->dda.mapy + 1.0;
 	}
-	f.distwall = env->walldist;
+	f.distwall = env->dda.walldist;
 	draw_floor(env, f, x);
 }

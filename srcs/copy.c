@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/13 09:39:22 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/31 01:09:18 by thchin           ###   ########.fr       */
+/*   Updated: 2017/07/11 09:04:53 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,14 +31,18 @@ void	copy_npc(t_env *env, t_env *src)
 	while (i < NSPRITE)
 	{
 		env->sprite[i] = src->sprite[i];
-		env->spriteorder[i] = src->spriteorder[i];
 		i += 1;
 	}
 	i = 0;
 	while (i < NENEMY)
 	{
 		env->npc[i] = src->npc[i];
-		env->npcorder[i] = src->npcorder[i];
+		i += 1;
+	}
+	i = 0;
+	while (i < NOBJ)
+	{
+		env->obj[i] = src->obj[i];
 		i += 1;
 	}
 }
@@ -51,11 +55,12 @@ t_env	*copy_env(t_env *src)
 	env = (t_env *)malloc(sizeof(t_env));
 	copy_player(env, src);
 	i = 0;
-	while (i < 14)
+	while (i < 15)
 	{
 		env->text[i] = src->text[i];
 		i += 1;
 	}
+	env->dda = src->dda;
 	env->screen = src->screen;
 	env->move = src->move;
 	env->weapon = src->weapon;

@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/27 00:36:28 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/31 00:49:50 by thchin           ###   ########.fr       */
+/*   Updated: 2017/07/11 09:07:15 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,14 @@
 #include "../includes/wolf3d.h"
 
 #define SPRITE env->npc[i].sprite
+#define XRIGHT env->posx + env->planex * move.move_speed
+#define YRIGHT env->posy + env->planey * move.move_speed
+#define XLEFT env->posx - env->planex * move.move_speed
+#define YLEFT env->posy - env->planey * move.move_speed
+#define XUP env->posx + env->dirx * move.move_speed
+#define YUP env->posy + env->diry * move.move_speed
+#define XDOWN env->posx - env->dirx * move.move_speed
+#define YDOWN env->posy - env->diry * move.move_speed
 
 void	rotate_left(t_env *env, t_move move)
 {
@@ -57,20 +65,20 @@ void	strafe_player(t_env *env, t_move move)
 {
 	if (move.strafe_right == 1)
 	{
-		if (0 >= env->map[(int)(env->posy)]
-				[(int)(env->posx + env->planex * move.move_speed)])
+		if (0 >= env->map[(int)(env->posy)][(int)(XRIGHT)] &&
+			0 == sprite_collision(env, XRIGHT, env->posy))
 			env->posx += env->planex * move.move_speed;
-		if (0 >= env->map[(int)(env->posy + env->planey * move.move_speed)]
-				[(int)(env->posx)])
+		if (0 >= env->map[(int)(YRIGHT)][(int)(env->posx)] &&
+			0 == sprite_collision(env, env->posx, YRIGHT))
 			env->posy += env->planey * move.move_speed;
 	}
 	if (move.strafe_left == 1)
 	{
-		if (0 >= env->map[(int)(env->posy)]
-				[(int)(env->posx - env->planex * move.move_speed)])
+		if (0 >= env->map[(int)(env->posy)][(int)(XLEFT)] &&
+			0 == sprite_collision(env, XLEFT, env->posy))
 			env->posx -= env->planex * move.move_speed;
-		if (0 >= env->map[(int)(env->posy - env->planey * move.move_speed)]
-				[(int)(env->posx)])
+		if (0 >= env->map[(int)(YLEFT)][(int)(env->posx)] &&
+			0 == sprite_collision(env, env->posx, YLEFT))
 			env->posy -= env->planey * move.move_speed;
 	}
 }
@@ -79,20 +87,20 @@ void	move_player(t_env *env, t_move move)
 {
 	if (move.move_up == 1)
 	{
-		if (0 >= env->map[(int)(env->posy)]
-				[(int)(env->posx + env->dirx * move.move_speed)])
+		if (0 >= env->map[(int)(env->posy)][(int)(XUP)] &&
+			0 == sprite_collision(env, XUP, env->posy))
 			env->posx += env->dirx * move.move_speed;
-		if (0 >= env->map[(int)(env->posy + env->diry * move.move_speed)]
-				[(int)(env->posx)])
+		if (0 >= env->map[(int)(YUP)][(int)(env->posx)] &&
+			0 == sprite_collision(env, env->posx, YUP))
 			env->posy += env->diry * move.move_speed;
 	}
 	if (move.move_down == 1)
 	{
-		if (0 >= env->map[(int)(env->posy)]
-				[(int)(env->posx - env->dirx * move.move_speed)])
+		if (0 >= env->map[(int)(env->posy)][(int)(XDOWN)] &&
+			0 == sprite_collision(env, XDOWN, env->posy))
 			env->posx -= env->dirx * move.move_speed;
-		if (0 >= env->map[(int)(env->posy - env->diry * move.move_speed)]
-				[(int)(env->posx)])
+		if (0 >= env->map[(int)(YDOWN)][(int)(env->posx)] &&
+			0 == sprite_collision(env, env->posx, YDOWN))
 			env->posy -= env->diry * move.move_speed;
 	}
 	rotate_left(env, move);

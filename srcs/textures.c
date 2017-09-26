@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/10 06:08:21 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/15 12:58:56 by thchin           ###   ########.fr       */
+/*   Updated: 2017/06/15 05:12:55 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@
 #define GUN "resources/Weapons.png"
 #define GUARD "resources/Guard.png"
 #define HURT "resources/Hurt2.png"
+#define OBJ "resources/Objects.png"
 
 void	get_texture(t_env *env)
 {
@@ -44,7 +45,8 @@ void	get_texture(t_env *env)
 		NULL == (env->text[10] = IMG_Load(GLIGHT)) ||
 		NULL == (env->text[11] = IMG_Load(GUN)) ||
 		NULL == (env->text[12] = IMG_Load(GUARD)) ||
-		NULL == (env->text[13] = IMG_Load(HURT)))
+		NULL == (env->text[13] = IMG_Load(HURT)) ||
+		NULL == (env->text[14] = IMG_Load(OBJ)))
 		clear_env(env);
 }
 
@@ -68,7 +70,7 @@ void	get_text_color(t_env *env, int x, int y, int texty)
 	Uint8		*pixel;
 	double		dist;
 
-	dist = 1.0 / env->walldist;
+	dist = 1.0 / env->dda.walldist;
 	dist = dist > 1.0 ? 1.0 : dist;
 	dist = dist < 0.0 ? 0.0 : dist;
 	data = env->text[env->text_num];
@@ -79,7 +81,7 @@ void	get_text_color(t_env *env, int x, int y, int texty)
 	pixel[1] = color[0] * dist;
 	pixel[2] = color[1] * dist;
 	pixel[3] = color[2] * dist;
-	if (env->side == 1)
+	if (env->dda.side == 1)
 	{
 		pixel[1] = (pixel[1] >> 1 & 8355711) * dist;
 		pixel[2] = (pixel[2] >> 1 & 8355711) * dist;
@@ -101,22 +103,22 @@ void	draw_textline(t_env *env, int x)
 		d = y * 256 - (HEIGHT - 1) * 128 + env->lineheight * 128;
 		texty = ((d * 64) / env->lineheight) / 256;
 		get_text_color(env, x, y, texty);
-		env->spritebuffer[y] = env->walldist;
+		env->spritebuffer[y] = env->dda.walldist;
 		y += 1;
 	}
 }
 
-void	calcul_textx(t_env *env)
+void	calcul_textx(t_env *env, t_dda dda)
 {
-	env->text_num = env->map[(int)env->mapy][(int)env->mapx] - 1;
-	if (env->side == 0)
-		env->wallx = env->rayposy + env->walldist * env->raydiry;
+	env->text_num = env->map[(int)dda.mapy][(int)dda.mapx] - 1;
+	if (dda.side == 0)
+		env->wallx = dda.rayposy + dda.walldist * dda.raydiry;
 	else
-		env->wallx = env->rayposx + env->walldist * env->raydirx;
+		env->wallx = dda.rayposx + dda.walldist * dda.raydirx;
 	env->wallx -= floor(env->wallx);
 	env->textx = (int)(env->wallx * (double)64);
-	if (env->side == 0 && env->raydirx > 0)
+	if (dda.side == 0 && dda.raydirx > 0)
 		env->textx = 64 - env->textx - 1;
-	if (env->side == 1 && env->raydiry < 0)
+	if (dda.side == 1 && dda.raydiry < 0)
 		env->textx = 64 - env->textx - 1;
 }

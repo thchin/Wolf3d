@@ -6,30 +6,32 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/15 14:07:22 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/31 01:10:23 by thchin           ###   ########.fr       */
+/*   Updated: 2017/07/11 09:35:15 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include <math.h>
 #include "../includes/wolf3d.h"
 
 #define NPC env->npc[i]
+#define SPRITE env->npc[i].sprite
 
 t_text	get_npc(int nb)
 {
 	static t_text	npc[NENEMY] =
-	{	{18.5, 1.5, 12},
-		{21.5, 1.5, 12},
-		{21.5, 2.5, 12},
-		{21.5, 3.5, 12},
-		{21.5, 4.5, 12},
-		{20.5, 1.5, 12},
-		{20.5, 2.5, 12},
-		{20.5, 3.5, 12},
-		{20.5, 4.5, 12},
-		{19.5, 1.5, 12},
-		{19.5, 2.5, 12},
-		{19.5, 3.5, 12},
-		{19.5, 4.5, 12},
+	{	{18.5, 1.5, 12, CHAR},
+		{21.5, 1.5, 12, CHAR},
+		{21.5, 2.5, 12, CHAR},
+		{21.5, 3.5, 12, CHAR},
+		{21.5, 4.5, 12, CHAR},
+		{20.5, 1.5, 12, CHAR},
+		{20.5, 2.5, 12, CHAR},
+		{20.5, 3.5, 12, CHAR},
+		{20.5, 4.5, 12, CHAR},
+		{19.5, 1.5, 12, CHAR},
+		{19.5, 2.5, 12, CHAR},
+		{19.5, 3.5, 12, CHAR},
+		{19.5, 4.5, 12, CHAR},
 	};
 
 	return (npc[nb]);
@@ -39,21 +41,17 @@ void	sort_npc(t_env *env)
 {
 	int		i;
 	int		j;
-	int		tmp;
-	double	tmpf;
+	t_npc	tmp;
 
 	i = 0;
 	j = 1;
 	while (i < NENEMY)
 	{
-		if (env->npcdist[i] > env->npcdist[j])
+		if (j < NENEMY && env->npc[i].sprite.dist > env->npc[j].sprite.dist)
 		{
-			tmp = env->npcorder[i];
-			env->npcorder[i] = env->npcorder[j];
-			env->npcorder[j] = tmp;
-			tmpf = env->npcdist[i];
-			env->npcdist[i] = env->npcdist[j];
-			env->npcdist[j] = tmpf;
+			tmp = env->npc[i];
+			env->npc[i] = env->npc[j];
+			env->npc[j] = tmp;
 		}
 		j += 1;
 		if (j >= NENEMY)
@@ -71,11 +69,9 @@ void	order_npc(t_env *env)
 	i = 0;
 	while (i < NENEMY)
 	{
-		env->npcorder[i] = i;
-		env->npcdist[i] = ((env->posx - NPC.sprite.text.x) *
-				(env->posx - NPC.sprite.text.x) +
-				(env->posy - NPC.sprite.text.y) *
-				(env->posy - NPC.sprite.text.y));
+		SPRITE.dist = sqrtf((env->posx - SPRITE.text.x) *
+				(env->posx - SPRITE.text.x) +
+				(env->posy - SPRITE.text.y) * (env->posy - SPRITE.text.y));
 		i += 1;
 	}
 	sort_npc(env);

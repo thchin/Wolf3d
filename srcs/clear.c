@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/01 04:02:33 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/02 09:14:06 by thchin           ###   ########.fr       */
+/*   Updated: 2017/08/29 02:32:16 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	clear_text(t_env *env)
 	int	i;
 
 	i = 0;
-	while (i < 14)
+	while (i < 15)
 	{
 		if (NULL != env->text[i])
 			SDL_FreeSurface(env->text[i]);
@@ -64,10 +64,11 @@ void	clear_sdl(void)
 
 int		clear_env(t_env *env)
 {
+	clear_text(env);
 	clear_map(env);
+	clear_menu(env->menu);
 	clear_hud(env->hud);
 	clear_sdl();
-	clear_menu(env->menu);
 	free(env);
 	exit(0);
 }

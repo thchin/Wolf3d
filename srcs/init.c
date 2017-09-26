@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/01 04:00:28 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/02 09:12:04 by thchin           ###   ########.fr       */
+/*   Updated: 2017/06/15 06:09:52 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,9 @@
 #include <SDL/SDL_ttf.h>
 #include "../includes/wolf3d.h"
 
-void	init_player(t_env *env)
-{
-	env->posx = 2;
-	env->posy = 11.5;
-	env->dirx = 1.0;
-	env->diry = 0;
-	env->planex = 0;
-	env->planey = 0.66;
-	env->hited = 0;
-}
-
 void	init_move(t_move *move)
 {
+	move->speed = 2.0;
 	move->move_speed = 0.1;
 	move->rot_speed = 0.1;
 	move->move_up = 0;
@@ -53,6 +43,7 @@ void	init_game(t_env *env)
 	init_player(env);
 	init_sprite(env);
 	init_npc(env);
+	init_obj(env);
 	init_weapon(&env->weapon);
 	init_move(&env->move);
 	env->time = 0;
@@ -65,6 +56,8 @@ void	init_game(t_env *env)
 	env->screen_menu = 0;
 	env->ingame = 0;
 	env->dead = 0;
+	env->question = 0;
+	env->newgame = 0;
 }
 
 t_env	*init_env(void)

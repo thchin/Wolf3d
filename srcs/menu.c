@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/02 08:41:22 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/02 09:15:47 by thchin           ###   ########.fr       */
+/*   Updated: 2017/08/29 01:58:23 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 #define MENU env->menu
 #define HUD env->hud
+#define WARNING "your progression will be lost"
 
 void	init_font_menu(t_env *env)
 {
@@ -25,6 +26,10 @@ void	init_font_menu(t_env *env)
 	MENU.new = TTF_RenderText_Blended(HUD.police, "new game", HUD.c);
 	MENU.quit = TTF_RenderText_Blended(HUD.police, "quit game", HUD.c);
 	MENU.row = TTF_RenderText_Blended(HUD.police, "-> ", HUD.c);
+	MENU.warning = TTF_RenderText_Blended(HUD.police, WARNING, HUD.c);
+	MENU.question = TTF_RenderText_Blended(HUD.police, "are you sure ?", HUD.c);
+	MENU.yes = TTF_RenderText_Blended(HUD.police, "yes", HUD.c);
+	MENU.no = TTF_RenderText_Blended(HUD.police, "no", HUD.c);
 }
 
 void	clear_menu(t_menu menu)
@@ -34,6 +39,10 @@ void	clear_menu(t_menu menu)
 	SDL_FreeSurface(menu.new);
 	SDL_FreeSurface(menu.quit);
 	SDL_FreeSurface(menu.row);
+	SDL_FreeSurface(menu.warning);
+	SDL_FreeSurface(menu.question);
+	SDL_FreeSurface(menu.yes);
+	SDL_FreeSurface(menu.no);
 }
 
 void	print_back_menu(t_env *env)
@@ -90,18 +99,23 @@ void	print_menu(t_env *env, int i)
 {
 	SDL_Rect	pos;
 
-	print_back_menu(env);
-	pos.x = WIDTH / 2 - MENU.new->w / 2;
-	pos.y = HEIGHT / 3;
-	get_font_color(env, MENU.new, pos);
-	pos.x = WIDTH / 2 - MENU.quit->w / 2;
-	pos.y = (HEIGHT / 3) * 2;
-	get_font_color(env, MENU.quit, pos);
-	if (1 == env->ingame)
+	if (0 == env->question)
 	{
-		pos.x = WIDTH / 2 - MENU.resume->w / 2;
-		pos.y = HEIGHT / 3 + HEIGHT / 3 / 2;
-		get_font_color(env, MENU.resume, pos);
+		print_back_menu(env);
+		pos.x = WIDTH / 2 - MENU.new->w / 2;
+		pos.y = HEIGHT / 3;
+		get_font_color(env, MENU.new, pos);
+		pos.x = WIDTH / 2 - MENU.quit->w / 2;
+		pos.y = (HEIGHT / 3) * 2;
+		get_font_color(env, MENU.quit, pos);
+		if (1 == env->ingame)
+		{
+			pos.x = WIDTH / 2 - MENU.resume->w / 2;
+			pos.y = HEIGHT / 3 + HEIGHT / 3 / 2;
+			get_font_color(env, MENU.resume, pos);
+		}
+		print_row_menu(env, i);
 	}
-	print_row_menu(env, i);
+	else
+		print_question(env, &i);
 }

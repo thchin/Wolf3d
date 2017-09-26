@@ -6,13 +6,13 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/04/27 04:39:40 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/31 01:10:53 by thchin           ###   ########.fr       */
+/*   Updated: 2017/08/23 05:18:40 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/wolf3d.h"
 
-#define SPRITE env->sprite[env->spriteorder[i]]
+#define SPRITE env->sprite[i]
 
 void	dark_sprite(Uint8 *pixel, t_sprite sprite)
 {
@@ -71,32 +71,19 @@ void	set_sprite(t_env *env, t_sprite *sprite)
 			(1 + sprite->transformx / sprite->transformy));
 	sprite->height = ft_abs((int)(HEIGHT / (sprite->transformy)));
 	sprite->drawstarty = -sprite->height / 2 + HEIGHT / 2;
-	if (sprite->drawstarty < 0)
-		sprite->drawstarty = 0;
 	sprite->drawendy = sprite->height / 2 + HEIGHT / 2;
-	if (sprite->drawendy >= HEIGHT)
-		sprite->drawendy = HEIGHT - 1;
 	sprite->width = ft_abs((int)(HEIGHT / (sprite->transformy)));
 	sprite->drawstartx = -sprite->width / 2 + sprite->screenx;
-	if (sprite->drawstartx < 0)
-		sprite->drawstartx = 0;
 	sprite->drawendx = sprite->width / 2 + sprite->screenx;
-	if (sprite->drawendx >= WIDTH)
-		sprite->drawendx = WIDTH - 1;
-	if (sprite->text.text == 9)
-	{
-		if (sprite->drawstartx > 0)
-			sprite->drawstartx += (sprite->drawendx - sprite->drawstartx) * 0.2;
-	}
-	if (sprite->text.text == 8)
-	{
-		if (sprite->drawstartx > 0)
-			sprite->drawstartx += (sprite->drawendx - sprite->drawstartx) * 0.2;
-		if (sprite->drawendx < WIDTH - 1)
-			sprite->drawendx -= (sprite->drawendx - sprite->drawstartx) * 0.2;
-		if (sprite->drawstarty > 0)
-			sprite->drawstarty += (sprite->drawendy - sprite->drawstarty) * 0.4;
-	}
+	sprite->drawendx = sprite->drawstartx + sprite->width * sprite->textendx;
+	sprite->drawendy = sprite->drawstarty + sprite->height * sprite->textendy;
+	sprite->drawstarty += sprite->height * sprite->textstarty;
+	sprite->drawstartx += sprite->width * sprite->textstartx;
+	sprite->drawstarty = sprite->drawstarty < 0 ? 0 : sprite->drawstarty;
+	sprite->drawendy = sprite->drawendy >= HEIGHT ?
+						HEIGHT - 1 : sprite->drawendy;
+	sprite->drawstartx = sprite->drawstartx < 0 ? 0 : sprite->drawstartx;
+	sprite->drawendx = sprite->drawendx >= WIDTH ? WIDTH - 1 : sprite->drawendx;
 }
 
 void	update_sprite(t_env *env)
@@ -107,7 +94,7 @@ void	update_sprite(t_env *env)
 	order_sprite(env);
 	while (i < NSPRITE)
 	{
-		set_sprite(env, &env->sprite[env->spriteorder[i]]);
+		set_sprite(env, &env->sprite[i]);
 		i += 1;
 	}
 }
@@ -120,9 +107,9 @@ void	sprite_casting(t_env *env, int x)
 	i = 0;
 	while (i < NSPRITE)
 	{
-		if (SPRITE.transformy > 0 && SPRITE.transformy < env->walldist &&
-			x >= SPRITE.drawstartx && x < SPRITE.drawendx &&
-			SPRITE.text.text != 12)
+		if (SPRITE.transformy > 0 && SPRITE.transformy < env->dda.walldist &&
+				x >= SPRITE.drawstartx && x < SPRITE.drawendx &&
+				SPRITE.text.text != 12)
 		{
 			y = SPRITE.drawstarty;
 			while (y < SPRITE.drawendy)

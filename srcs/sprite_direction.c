@@ -6,12 +6,21 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/13 08:52:03 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/16 10:50:18 by thchin           ###   ########.fr       */
+/*   Updated: 2017/06/15 05:39:37 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
 #include "../includes/wolf3d.h"
+
+void	norm_vec2f(double *x, double *y)
+{
+	double	tmp;
+
+	tmp = 1.0 / sqrtf(*x * *x + *y * *y);
+	*x *= tmp;
+	*y *= tmp;
+}
 
 double	get_angle(t_env *env, t_npc npc)
 {
@@ -21,9 +30,7 @@ double	get_angle(t_env *env, t_npc npc)
 
 	dirx = env->posx - npc.sprite.text.x;
 	diry = env->posy - npc.sprite.text.y;
-	angle = 1.0 / sqrtf(dirx * dirx + diry * diry);
-	dirx *= angle;
-	diry *= angle;
+	norm_vec2f(&dirx, &diry);
 	angle = atan2(diry, dirx) - atan2(npc.diry, npc.dirx);
 	angle += M_PI / 2;
 	angle = (angle > M_PI * 2) ? angle - M_PI * 2 : angle;

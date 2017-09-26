@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/02/24 00:50:55 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/02 09:16:45 by thchin           ###   ########.fr       */
+/*   Updated: 2017/07/12 04:30:47 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ void	cheat_event(SDL_Event event, t_env *env)
 	}
 }
 
-void	weapon_event(SDL_Event event, t_weapon *weapon)
+void	weapon_event(SDL_Event event, t_inventory inv, t_weapon *weapon)
 {
 	if (event.type == SDL_KEYDOWN)
 	{
@@ -46,9 +46,9 @@ void	weapon_event(SDL_Event event, t_weapon *weapon)
 			weapon->weapon = 0;
 		if (KEY == SDLK_2)
 			weapon->weapon = 1;
-		if (KEY == SDLK_3)
+		if (KEY == SDLK_3 && 1 == inv.smg)
 			weapon->weapon = 2;
-		if (KEY == SDLK_4)
+		if (KEY == SDLK_4 && 1 == inv.machinegun)
 			weapon->weapon = 3;
 		if (KEY == SDLK_r)
 		{
@@ -81,6 +81,8 @@ void	move_end_event(SDL_Event event, t_move *move)
 			move->strafe_left = 0;
 		if (KEY == SDLK_e)
 			move->strafe_right = 0;
+		if (KEY == SDLK_LSHIFT)
+			move->speed = 2;
 	}
 }
 
@@ -100,6 +102,8 @@ void	move_start_event(SDL_Event event, t_move *move)
 			move->strafe_left = 1;
 		if (KEY == SDLK_e)
 			move->strafe_right = 1;
+		if (KEY == SDLK_LSHIFT)
+			move->speed = 4;
 	}
 }
 
@@ -111,10 +115,13 @@ int		key_hook(t_env *env, int *i)
 	{
 		if (event.type == SDL_QUIT)
 			clear_env(env);
-		menu_event(event, env, i);
+		if (0 == env->question)
+			menu_event(event, env, i);
+		else
+			question_event(event, env, i);
 		move_start_event(event, &env->move);
 		move_end_event(event, &env->move);
-		weapon_event(event, &env->weapon);
+		weapon_event(event, env->inv, &env->weapon);
 		cheat_event(event, env);
 		print_img(env);
 	}

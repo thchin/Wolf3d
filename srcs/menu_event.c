@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/06/02 09:16:13 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/02 09:17:50 by thchin           ###   ########.fr       */
+/*   Updated: 2017/08/24 06:30:08 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,31 +37,61 @@ void	move_menu_event(SDL_Event event, t_env *env, int *i)
 	}
 }
 
+void	menu_newgame_event(SDL_Event event, t_env *env, int *i)
+{
+	if (0 == env->ingame)
+	{
+		init_game(env);
+		env->screen_menu = 1;
+		env->ingame = 1;
+	}
+	else
+	{
+		env->question = 1;
+		env->newgame = 1;
+		*i = 1;
+	}
+}
+
+void	menu_enter_event(SDL_Event event, t_env *env, int *i)
+{
+	if (KEY == SDLK_RETURN)
+	{
+		if (0 == *i)
+			menu_newgame_event(event, env, i);
+		else if (1 == *i)
+			env->screen_menu = 1;
+		else if (2 == *i)
+		{
+			if (1 == env->ingame)
+			{
+				env->question = 1;
+				*i = 1;
+			}
+			else
+				clear_env(env);
+		}
+	}
+}
+
 void	menu_event(SDL_Event event, t_env *env, int *i)
 {
 	if (event.type == SDL_KEYDOWN)
 	{
 		if (KEY == SDLK_ESCAPE)
 		{
-			if (env->screen_menu == 0)
+			if (0 == env->screen_menu && 0 == env->ingame)
 				clear_env(env);
-			env->screen_menu = 0;
-			if (env->life > 0)
-				*i = 1;
-		}
-		if (KEY == SDLK_RETURN)
-		{
-			if (0 == *i)
+			else if (0 == env->screen_menu && 1 == env->ingame)
+				env->question = 1;
+			else
 			{
-				init_game(env);
-				env->screen_menu = 1;
-				env->ingame = 1;
+				env->screen_menu = 0;
+				if (env->life > 0)
+					*i = 1;
 			}
-			else if (1 == *i)
-				env->screen_menu = 1;
-			else if (2 == *i)
-				clear_env(env);
 		}
+		menu_enter_event(event, env, i);
 		move_menu_event(event, env, i);
 	}
 }

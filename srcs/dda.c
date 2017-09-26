@@ -6,92 +6,89 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/03 01:24:28 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/13 06:59:13 by thchin           ###   ########.fr       */
+/*   Updated: 2017/06/15 05:08:01 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <math.h>
 #include "../includes/wolf3d.h"
 
-void	init_dda(t_env *env, int x)
+void	init_player_dda(t_env *env, t_dda *dda, int x)
 {
-	env->camerax = 2 * x / (double)(WIDTH) - 1;
-	env->rayposx = env->posx;
-	env->rayposy = env->posy;
-	env->raydirx = env->dirx + env->planex * env->camerax;
-	env->raydiry = env->diry + env->planey * env->camerax;
-	env->mapx = (int)env->rayposx;
-	env->mapy = (int)env->rayposy;
-	env->deltadistx = sqrt(1 +
-			(env->raydiry * env->raydiry) / (env->raydirx * env->raydirx));
-	env->deltadisty = sqrt(1 +
-			(env->raydirx * env->raydirx) / (env->raydiry * env->raydiry));
-	env->hit = 0;
+	double	camerax;
+
+	camerax = 2.0 * x / (double)(WIDTH) - 1;
+	dda->rayposx = env->posx;
+	dda->rayposy = env->posy;
+	dda->raydirx = env->dirx + env->planex * camerax;
+	dda->raydiry = env->diry + env->planey * camerax;
+	dda->mapx = (int)dda->rayposx;
+	dda->mapy = (int)dda->rayposy;
+	dda->deltadistx = sqrt(1 +
+			(dda->raydiry * dda->raydiry) / (dda->raydirx * dda->raydirx));
+	dda->deltadisty = sqrt(1 +
+			(dda->raydirx * dda->raydirx) / (dda->raydiry * dda->raydiry));
+	dda->hit = 0;
 }
 
-void	calcul_step(t_env *env)
+void	calcul_step(t_dda *dda)
 {
-	if (env->raydirx < 0)
+	if (dda->raydirx < 0)
 	{
-		env->stepx = -1;
-		env->sidedistx = (env->rayposx - env->mapx) * env->deltadistx;
+		dda->stepx = -1;
+		dda->sidedistx = (dda->rayposx - dda->mapx) * dda->deltadistx;
 	}
 	else
 	{
-		env->stepx = 1;
-		env->sidedistx = (env->mapx + 1.0 - env->rayposx) * env->deltadistx;
+		dda->stepx = 1;
+		dda->sidedistx = (dda->mapx + 1.0 - dda->rayposx) * dda->deltadistx;
 	}
-	if (env->raydiry < 0)
+	if (dda->raydiry < 0)
 	{
-		env->stepy = -1;
-		env->sidedisty = (env->rayposy - env->mapy) * env->deltadisty;
+		dda->stepy = -1;
+		dda->sidedisty = (dda->rayposy - dda->mapy) * dda->deltadisty;
 	}
 	else
 	{
-		env->stepy = 1;
-		env->sidedisty = (env->mapy + 1.0 - env->rayposy) * env->deltadisty;
+		dda->stepy = 1;
+		dda->sidedisty = (dda->mapy + 1.0 - dda->rayposy) * dda->deltadisty;
 	}
 }
 
-void	dda(t_env *env)
+void	dda(t_env *env, t_dda *dda)
 {
-	double	tmpx;
-	double	tmpy;
-
-	while (env->hit == 0)
+	while (dda->hit == 0)
 	{
-		if (env->sidedistx < env->sidedisty)
+		if (dda->sidedistx < dda->sidedisty)
 		{
-			env->sidedistx += env->deltadistx;
-			env->mapx += env->stepx;
-			env->side = 0;
+			dda->sidedistx += dda->deltadistx;
+			dda->mapx += dda->stepx;
+			dda->side = 0;
 		}
 		else
 		{
-			env->sidedisty += env->deltadisty;
-			env->mapy += env->stepy;
-			env->side = 1;
+			dda->sidedisty += dda->deltadisty;
+			dda->mapy += dda->stepy;
+			dda->side = 1;
 		}
-		if (env->map[(int)env->mapy][(int)env->mapx] > 0)
-			env->hit = 1;
+		if (env->map[(int)dda->mapy][(int)dda->mapx] > 0)
+			dda->hit = 1;
 	}
 }
 
-void	calcul_walldist(t_env *env)
+void	calcul_walldist(t_dda *dda)
 {
-	if (env->side == 0)
-	{
-		env->walldist = (env->mapx - env->rayposx + (1 - env->stepx) / 2) /
-			env->raydirx;
-	}
+	if (dda->side == 0)
+		dda->walldist = (dda->mapx - dda->rayposx + (1 - dda->stepx) / 2) /
+			dda->raydirx;
 	else
-		env->walldist = (env->mapy - env->rayposy + (1 - env->stepy) / 2) /
-			env->raydiry;
+		dda->walldist = (dda->mapy - dda->rayposy + (1 - dda->stepy) / 2) /
+			dda->raydiry;
 }
 
-void	calcul_height(t_env *env)
+void	calcul_height(t_env *env, t_dda dda)
 {
-	env->lineheight = (int)(HEIGHT / (env->walldist));
+	env->lineheight = (int)(HEIGHT / (dda.walldist));
 	env->drawstart = -(env->lineheight) / 2 + HEIGHT / 2;
 	if (env->drawstart < 0)
 		env->drawstart = 0;

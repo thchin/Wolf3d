@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/02 01:51:25 by thchin            #+#    #+#             */
-/*   Updated: 2017/05/10 06:03:33 by thchin           ###   ########.fr       */
+/*   Updated: 2017/08/29 01:54:58 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ void	clear_tab(char **tab)
 	tab = NULL;
 }
 
-void	get_map_size(t_env *env, char *line)
+int		get_map_size(t_env *env, char *line)
 {
 	int	i;
 
@@ -51,9 +51,10 @@ void	get_map_size(t_env *env, char *line)
 			clear_env(env);
 		i += 1;
 	}
+	return (TRUE);
 }
 
-void	get_map_line(t_env *env, char *line)
+int		get_map_line(t_env *env, char *line)
 {
 	static int	i = 0;
 	int			j;
@@ -68,26 +69,32 @@ void	get_map_line(t_env *env, char *line)
 	}
 	clear_tab(tab);
 	i += 1;
+	return (TRUE);
 }
 
 int		get_map(t_env *env)
 {
+	int		i;
 	int		fd;
 	char	*line;
 
-	if (0 > (fd = open("map1", O_RDONLY)))
+	if (0 > (fd = open("map/map1", O_RDONLY)))
 		return (FALSE);
 	if (0 >= get_next_line(fd, &line))
 	{
 		close(fd);
 		return (FALSE);
 	}
-	get_map_size(env, line);
+	if (0 == get_map_size(env, line))
+		return (FALSE);
 	free(line);
+	i = 0;
 	while (0 < get_next_line(fd, &line))
 	{
 		get_map_line(env, line);
 		free(line);
+		i += 1;
 	}
+	close(fd);
 	return (TRUE);
 }

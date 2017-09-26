@@ -6,23 +6,23 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/13 04:39:02 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/01 05:30:32 by thchin           ###   ########.fr       */
+/*   Updated: 2017/06/15 05:26:13 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/wolf3d.h"
 
-#define NPC env->npc[env->npcorder[i]]
+#define NPC env->npc[i]
 #define STEXT sprite.text.text
 #define SCROSS 16
 #define X WIDTH / 2 - SCROSS / 2 + s.x
 
 void	get_midwalldist(t_env *env)
 {
-	init_dda(env, WIDTH / 2);
-	calcul_step(env);
-	dda(env);
-	calcul_walldist(env);
+	init_player_dda(env, &env->dda, WIDTH / 2);
+	calcul_step(&env->dda);
+	dda(env, &env->dda);
+	calcul_walldist(&env->dda);
 }
 
 int		check_pixel_perfect(t_env *env, t_sprite sprite)
@@ -96,7 +96,7 @@ void	bullet_cast(t_env *env, t_weapon *w)
 		i = 0;
 		while (w->bullet == 1 && i < NENEMY)
 		{
-			if (1 == check_range(NPC.sprite, env->walldist) &&
+			if (1 == check_range(NPC.sprite, env->dda.walldist) &&
 				NPC.stance != DEAD && NPC.sprite.text.text == 12 &&
 				1 == check_pixel_perfect(env, NPC.sprite))
 			{

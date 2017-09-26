@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/03/01 03:55:07 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/02 09:17:17 by thchin           ###   ########.fr       */
+/*   Updated: 2017/08/29 02:00:21 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,8 @@
 # define FALSE 0
 # define NSPRITE 19
 # define NENEMY 13
-# define NTHREAD 4
+# define NTHREAD 8
+# define NOBJ 6
 
 typedef enum	e_stance
 {
@@ -34,11 +35,24 @@ typedef enum	e_stance
 	DEAD,
 }				t_stance;
 
+typedef enum	e_type
+{
+	KEY = 1,
+	HEALTH = 2,
+	FOOD = 3,
+	SMG = 4,
+	MACHINEGUN = 5,
+	WELL = 6,
+	CHAR = 7,
+	DECOR = 8,
+}				t_type;
+
 typedef struct	s_text
 {
 	double		x;
 	double		y;
 	int			text;
+	t_type		type;
 }				t_text;
 
 typedef struct	s_sprite
@@ -58,9 +72,14 @@ typedef struct	s_sprite
 	int			drawendy;
 	int			textx;
 	int			texty;
+	double		dist;
+	double		textstartx;
+	double		textendx;
+	double		textstarty;
+	double		textendy;
 }				t_sprite;
 
-typedef struct	t_npc
+typedef struct	s_npc
 {
 	t_sprite	sprite;
 	t_stance	stance;
@@ -73,6 +92,19 @@ typedef struct	t_npc
 	double		speed;
 	double		angle;
 }				t_npc;
+
+typedef struct	s_obj
+{
+	t_sprite	sprite;
+	int			active;
+}				t_obj;
+
+typedef struct	s_inventory
+{
+	int			key;
+	int			smg;
+	int			machinegun;
+}				t_inventory;
 
 typedef struct	s_floor
 {
@@ -102,8 +134,30 @@ typedef struct	s_map
 	t_sprite	sprite;
 }				t_map;
 
+typedef struct	s_color
+{
+	Uint8		r;
+	Uint8		g;
+	Uint8		b;
+}				t_color;
+
+typedef struct	s_minimap
+{
+	int			i;
+	int			x;
+	int			y;
+	int			max_x;
+	int			tmpx;
+	int			tmpy;
+	int			mapx;
+	int			mapy;
+	t_text		text;
+	t_color		color;
+}				t_minimap;
+
 typedef struct	s_move
 {
+	double		speed;
 	double		move_speed;
 	double		rot_speed;
 	int			move_up;
@@ -154,21 +208,14 @@ typedef struct	s_menu
 	SDL_Surface	*quit;
 	SDL_Surface	*row;
 	SDL_Surface	*resume;
+	SDL_Surface	*warning;
+	SDL_Surface	*question;
+	SDL_Surface	*yes;
+	SDL_Surface	*no;
 }				t_menu;
 
-typedef struct	s_env
+typedef struct	s_dda
 {
-	SDL_Surface	*screen;
-	int			**map;
-	int			mapwidth;
-	int			mapheight;
-	double		posx;
-	double		posy;
-	double		dirx;
-	double		diry;
-	double		planex;
-	double		planey;
-	double		camerax;
 	double		rayposx;
 	double		rayposy;
 	double		raydirx;
@@ -184,12 +231,25 @@ typedef struct	s_env
 	double		stepy;
 	int			hit;
 	int			side;
+}				t_dda;
+
+typedef struct	s_env
+{
+	SDL_Surface	*screen;
+	int			**map;
+	int			mapwidth;
+	int			mapheight;
+	double		posx;
+	double		posy;
+	double		dirx;
+	double		diry;
+	double		planex;
+	double		planey;
+	t_dda		dda;
 	int			lineheight;
 	int			drawstart;
 	int			drawend;
-	SDL_Surface	*text[14];
-	int			textwidth;
-	int			textheight;
+	SDL_Surface	*text[15];
 	int			text_num;
 	double		wallx;
 	int			textx;
@@ -206,19 +266,18 @@ typedef struct	s_env
 	double		spritebuffer[HEIGHT];
 	double		zbuffer[WIDTH];
 	t_sprite	sprite[NSPRITE];
-	int			spriteorder[NSPRITE];
-	double		spritedist[NSPRITE];
 	t_npc		npc[NENEMY];
-	int			npcorder[NENEMY];
-	double		npcdist[NENEMY];
+	t_obj		obj[NOBJ];
+	t_inventory	inv;
 	double		midwalldist;
 	int			life;
 	int			debug;
 	int			hurt;
-	int			hited;
 	int			screen_menu;
 	int			ingame;
+	int			newgame;
 	int			dead;
+	int			question;
 }				t_env;
 
 typedef struct	s_env_th
@@ -239,17 +298,18 @@ void			init_game(t_env *env);
 void			init_player(t_env *env);
 void			init_move(t_move *move);
 void			move_player(t_env *env, t_move move);
+int				sprite_collision(t_env *env, double posx, double posy);
 
 void			img_put_pixel(t_env *env, int x, int y, int color);
 void			fill_img(t_env *env, int color);
 
-void			init_dda(t_env *env, int x);
-void			calcul_step(t_env *env);
-void			dda(t_env *env);
-void			calcul_walldist(t_env *env);
-void			calcul_height(t_env *env);
+void			init_player_dda(t_env *env, t_dda *dda, int x);
+void			calcul_step(t_dda *dda);
+void			dda(t_env *env, t_dda *dda);
+void			calcul_walldist(t_dda *dda);
+void			calcul_height(t_env *env, t_dda dda);
 
-void			calcul_textx(t_env *env);
+void			calcul_textx(t_env *env, t_dda dda);
 void			draw_textline(t_env *env, int x);
 
 void			floor_casting(t_env *env, t_floor f, int x);
@@ -283,6 +343,14 @@ void			get_font_color(t_env *env, SDL_Surface *texte, SDL_Rect pos);
 
 void			print_hurt(t_env *env, int x, int y);
 
+void			hit_obj(t_env *env);
+
+void			init_obj(t_env *env);
+void			init_obj_text(t_sprite *sprite);
+void			order_obj(t_env *env);
+void			update_obj(t_env *env);
+void			obj_casting(t_env *env, int x);
+
 t_env			*copy_env(t_env *src);
 void			get_midwalldist(t_env *env);
 int				get_direction(double angle);
@@ -295,6 +363,19 @@ void			menu_event(SDL_Event event, t_env *env, int *i);
 void			print_menu(t_env *env, int i);
 void			clear_menu(t_menu menu);
 
+void			question_event(SDL_Event event, t_env *env, int *i);
+void			print_question(t_env *env, int *i);
+
 void			print_dead(t_env *env, int *i);
+
+void			init_inv(t_env *env);
+void			update_inventory(t_env *env, t_type type);
+
+t_color			get_color(t_env *env, int x, int y);
+void			draw_minimap(t_env *env);
+
+void			get_textbox(t_env *env, t_sprite *sprite);
+
+void			norm_vec2f(double *x, double *y);
 
 #endif

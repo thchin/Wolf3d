@@ -6,7 +6,7 @@
 #    By: thchin <marvin@42.fr>                      +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2016/12/08 14:48:39 by thchin            #+#    #+#              #
-#    Updated: 2017/06/02 09:17:30 by thchin           ###   ########.fr        #
+#    Updated: 2017/08/29 02:56:23 by thchin           ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -15,6 +15,8 @@ NAME = wolf3d
 SRC = srcs/anim_npc.c\
 	  srcs/anim_weapon.c\
 	  srcs/clear.c\
+	  srcs/collision.c\
+	  srcs/color.c\
 	  srcs/copy.c\
 	  srcs/dda.c\
 	  srcs/dead.c\
@@ -26,11 +28,17 @@ SRC = srcs/anim_npc.c\
 	  srcs/init.c\
 	  srcs/init_sprite.c\
 	  srcs/init_npc.c\
+	  srcs/init_obj.c\
+	  srcs/init_obj_text.c\
 	  srcs/main.c\
 	  srcs/menu.c\
 	  srcs/menu_event.c\
+	  srcs/minimap.c\
 	  srcs/move.c\
 	  srcs/npc.c\
+	  srcs/obj.c\
+	  srcs/player.c\
+	  srcs/question.c\
 	  srcs/shot.c\
 	  srcs/sprite.c\
 	  srcs/sprite_direction.c\
@@ -38,6 +46,7 @@ SRC = srcs/anim_npc.c\
 	  srcs/textures.c\
 	  srcs/time.c\
 	  srcs/weapon.c\
+	  srcs/opti.c\
 
 OBJ = $(SRC:.c=.o)
 
@@ -55,7 +64,9 @@ SDL_LIBS = -L ~/.brew/lib -lSDLmain -lSDL -lSDL_image -lSDL_ttf -Wl,-framework,C
 
 .PHONY: all clean
 
-all:
+all: $(NAME)
+
+$(NAME):
 	$(LIB)
 	gcc -c $(SDL_CFLAGS) $(SRC)
 	mv *o srcs/

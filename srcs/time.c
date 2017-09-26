@@ -6,7 +6,7 @@
 /*   By: thchin <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2017/05/13 09:44:43 by thchin            #+#    #+#             */
-/*   Updated: 2017/06/01 01:07:37 by thchin           ###   ########.fr       */
+/*   Updated: 2017/06/24 06:37:13 by thchin           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,6 @@ void	update_time(t_env *env)
 		env->npc[i].speed = env->frametime / 2.0;
 		i += 1;
 	}
-	env->move.move_speed = env->frametime * 2.0;
-	env->move.rot_speed = env->frametime;
+	env->move.move_speed = env->frametime * env->move.speed;
+	env->move.rot_speed = env->frametime * 2.0;
 }
