@@ -13,28 +13,29 @@ Controls:
 
 Menu :
 
-With simple options, we have resume game when the game is paused.
+ - With simple options, we have resume game when the game is paused.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Menu.png)
 
 UI + Decor + Minimap:
 
-For the UI, we have frame per second top left, minimap top right, life bottom left and ammunitions bottom right.
-The Decor is simply fill with barrels, columns and lights.
-Wall are textured, they are shadowed on y-side.
-A fog is apply proportionnal to the distance of the wall.
+ - For the UI, we have frame per second top left, minimap top right, life bottom left and ammunitions bottom right.
+ - The Decor is simply fill with barrels, columns and lights.
+ - Wall are textured, they are shadowed on y-side.
+ - A fog is apply proportionnal to the distance of the wall.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Screenshot1.png)
 
 Enemies :
 
-NPC have multidirectionnal sprites for 8 directions views, they have a simple A.I, if they looking a you they'll follow you until they are close enough to shot you.
+ - NPC have multidirectionnal sprites for 8 directions views.
+ - They have a simple A.I, if they looking a you they'll follow you until they are close enough to shot you.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Screenshot2.png)
 
 Objects :
 
-Objects can be weapons or life.
+ - Objects can be weapons or life.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Screenshot3.png)
 
@@ -42,7 +43,7 @@ Objects can be weapons or life.
 
 Death :
 
-Can only paused the game on this screen.
+ - Can only paused the game on this screen.
 
 ![alt text](https://github.com/thchin/Wolf3d/blob/master/screenshots/Death.png)
 
